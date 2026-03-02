@@ -38,10 +38,12 @@ app.use(
 );
 app.use(cookieParser());
 
-// CORS - restrict to allowed frontend origin
-const allowedOrigins = [
-  process.env.STUDY_NOTION_FRONTEND_SITE,
-].filter(Boolean);
+// CORS - restrict to allowed frontend origin(s)
+// STUDY_NOTION_FRONTEND_SITE may be a comma-separated list of origins
+const allowedOrigins = (process.env.STUDY_NOTION_FRONTEND_SITE || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
 
 if (allowedOrigins.length === 0 && process.env.NODE_ENV === 'production') {
   console.error('FATAL: STUDY_NOTION_FRONTEND_SITE is not set. CORS will block all cross-origin requests.'.red.bold);
