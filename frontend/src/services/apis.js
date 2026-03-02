@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL
+const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'https://logiclabsed-do-not-deploy-qpt4.onrender.com/api/v1'
 
 // AUTHENTICATION API
 export const authApi = {
