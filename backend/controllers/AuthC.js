@@ -344,8 +344,8 @@ exports.createAdmin = async (req, res, next) => {
     // send a notification to user for account creation
     emailSender(email, `Admin account created successfully for ${firstName} ${lastName}`, adminCreatedTemplate(firstName + ' ' + lastName));
 
-    res.status(400).json({
-      success: false,
+    res.status(201).json({
+      success: true,
       data: 'Admin created successfully',
     });
   } catch (err) {

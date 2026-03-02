@@ -5,6 +5,8 @@ const fileUpload = require('express-fileupload');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/database');
 const clgDev = require('./utils/clgDev');
 const errorHandler = require('./middlewares/errorHandler');
@@ -19,6 +21,9 @@ const app = express();
 connectDB();
 cloudinaryConnect();
 
+// Security HTTP headers
+app.use(helmet());
+
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -32,7 +37,31 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(cors());
+
+// CORS - restrict to allowed frontend origin
+const allowedOrigins = [
+  process.env.STUDY_NOTION_FRONTEND_SITE,
+].filter(Boolean);
+
+if (allowedOrigins.length === 0 && process.env.NODE_ENV === 'production') {
+  console.error('FATAL: STUDY_NOTION_FRONTEND_SITE is not set. CORS will block all cross-origin requests.'.red.bold);
+  process.exit(1);
+}
+
+app.use(cors({
+  origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+  credentials: true,
+}));
+
+// Rate limiting for auth routes (100 requests per 10 minutes per IP)
+const authLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 100,
+  message: { success: false, error: 'Too many requests from this IP, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount routes
@@ -48,7 +77,7 @@ const SubSectionR = require('./routes/SubSectionR');
 const UserR = require('./routes/UserR');
 const OtherR = require('./routes/OtherR');
 
-app.use('/api/v1/auth', AuthR);
+app.use('/api/v1/auth', authLimiter, AuthR);
 app.use('/api/v1/categories', CategoryR);
 app.use('/api/v1/courses', CourseR);
 app.use('/api/v1/payments', PaymentR);
