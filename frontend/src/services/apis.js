@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'https://logiclabsed-do-not-deploy-qpt4.onrender.com/api/v1'
+const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'https://study-notion-mern-backend-sunny8080.onrender.com/api/v1'
 
 // AUTHENTICATION API
 export const authApi = {
@@ -51,7 +51,7 @@ export const paymentApi = {
 
 // PROFILE API
 export const profileApi = {
-  PUT_UPDATE_PROFILE_API: BASE_URL + '/profiles ',
+  PUT_UPDATE_PROFILE_API: BASE_URL + '/profiles',
 }
 
 // REVIEW API
