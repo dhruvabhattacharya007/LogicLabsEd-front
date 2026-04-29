@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || 'https://study-notion-mern-backend-sunny8080.onrender.com/api/v1'
+const BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL || '/api/v1'
 
 // AUTHENTICATION API
 export const authApi = {
