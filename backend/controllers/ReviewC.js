@@ -1,6 +1,7 @@
 const Review = require('../models/Review');
 const Course = require('../models/Course');
 const User = require('../models/User');
+const mongoose = require('mongoose');
 const ErrorResponse = require('../utils/ErrorResponse');
 
 // @desc      Get all reviews
@@ -37,8 +38,8 @@ exports.getReview = async (req, res, next) => {
   try {
     const { reviewId } = req.body;
 
-    if (!reviewId) {
-      return next(new ErrorResponse('Invalid request', 404));
+    if (!reviewId || !mongoose.Types.ObjectId.isValid(reviewId)) {
+      return next(new ErrorResponse('Invalid request', 400));
     }
 
     const review = await Review.findById(reviewId)
@@ -71,8 +72,8 @@ exports.getReview = async (req, res, next) => {
 exports.getReviewsOfCourse = async (req, res, next) => {
   try {
     const { courseId } = req.body;
-    if (!courseId) {
-      return next(new ErrorResponse("Invalid request", 404));
+    if (!courseId || !mongoose.Types.ObjectId.isValid(courseId)) {
+      return next(new ErrorResponse("Invalid request", 400));
     }
 
     const course = await Course.findById(courseId).populate({
@@ -113,6 +114,9 @@ exports.createReview = async (req, res, next) => {
     const userId = req.user.id;
     if (!(review && rating && courseId)) {
       return next(new ErrorResponse('Some fields are missing', 404));
+    }
+    if (!mongoose.Types.ObjectId.isValid(courseId)) {
+      return next(new ErrorResponse('Invalid course id', 400));
     }
 
     // Check if user is enrolled or not
@@ -175,9 +179,9 @@ exports.createReview = async (req, res, next) => {
 // @access    Private/Student+Admin // VERIFIED
 exports.deleteReview = async (req, res, next) => {
   try {
-    const reviewId = req.body;
-    if (!reviewId) {
-      return next(new ErrorResponse('Invalid request', 404));
+    const { reviewId } = req.body;
+    if (!reviewId || !mongoose.Types.ObjectId.isValid(reviewId)) {
+      return next(new ErrorResponse('Invalid request', 400));
     }
 
     const review = await Review.findById(reviewId);
