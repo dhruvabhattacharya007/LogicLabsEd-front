@@ -1,5 +1,6 @@
 const Category = require('../models/Category');
 const Course = require('../models/Course');
+const mongoose = require('mongoose');
 const ErrorResponse = require('../utils/ErrorResponse');
 const clgDev = require('../utils/clgDev');
 
@@ -31,6 +32,10 @@ exports.getAllCategoryCourses = async (req, res, next) => {
     let requestedCategoryCoursesNew = null;
 
     if (categoryId) {
+      if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+        return next(new ErrorResponse('Invalid category id', 400));
+      }
+
       const reqCat = await Category.findById(categoryId)
         .populate({
           path: 'courses',
@@ -40,6 +45,10 @@ exports.getAllCategoryCourses = async (req, res, next) => {
           },
         })
         .exec();
+
+      if (!reqCat) {
+        return next(new ErrorResponse('No such category found', 404));
+      }
 
       requestedCategory = {
         name: reqCat.name,
@@ -56,14 +65,16 @@ exports.getAllCategoryCourses = async (req, res, next) => {
 
     // Get courses for other categories
     const categoriesExceptRequested = await Category.find({ _id: { $ne: categoryId } });
-
-    const otherCategoryCourses = await Category.findById(categoriesExceptRequested[getRandomInt(categoriesExceptRequested.length)]._id).populate({
-      path: 'courses',
-      match: { status: 'Published' },
-      populate: {
-        path: 'instructor',
-      },
-    });
+    let otherCategoryCourses = null;
+    if (categoriesExceptRequested.length > 0) {
+      otherCategoryCourses = await Category.findById(categoriesExceptRequested[getRandomInt(categoriesExceptRequested.length)]._id).populate({
+        path: 'courses',
+        match: { status: 'Published' },
+        populate: {
+          path: 'instructor',
+        },
+      });
+    }
 
     // Get top 10 selling courses
     const topSellingCourses = await Course.find({
