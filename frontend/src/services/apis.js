@@ -1,17 +1,11 @@
-const isNetlifyHost =
-  typeof window !== 'undefined' && window.location.hostname.endsWith('netlify.app');
-
-const rawBaseUrl = isNetlifyHost
-  ? '/api/v1'
-  : (
-      process.env.REACT_APP_BACKEND_BASE_URL
-      || process.env.REACT_APP_API_BASE_URL
-      || '/api/v1'
-    );
+const rawBaseUrl =
+  process.env.REACT_APP_BACKEND_BASE_URL
+  || process.env.REACT_APP_API_BASE_URL
+  || '/api/v1';
 
 const BASE_URL = rawBaseUrl.replace(/\/$/, '');
 
-if (!isNetlifyHost && !process.env.REACT_APP_BACKEND_BASE_URL && !process.env.REACT_APP_API_BASE_URL) {
+if (!process.env.REACT_APP_BACKEND_BASE_URL && !process.env.REACT_APP_API_BASE_URL) {
   console.warn('Using fallback API base URL (/api/v1). Set REACT_APP_BACKEND_BASE_URL for non-proxied deployments.');
 }
 
