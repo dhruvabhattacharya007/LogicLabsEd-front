@@ -42,16 +42,28 @@ app.use(cookieParser());
 // STUDY_NOTION_FRONTEND_SITE may be a comma-separated list of origins
 const allowedOrigins = (process.env.STUDY_NOTION_FRONTEND_SITE || '')
   .split(',')
-  .map(o => o.trim())
+  .map((o) => o.trim())
   .filter(Boolean);
 
+const netlifyOriginPattern = /^https:\/\/[a-z0-9-]+\.netlify\.app$/i;
+
 if (allowedOrigins.length === 0 && process.env.NODE_ENV === 'production') {
-  console.error('FATAL: STUDY_NOTION_FRONTEND_SITE is not set. CORS will block all cross-origin requests.'.red.bold);
-  process.exit(1);
+  console.warn('STUDY_NOTION_FRONTEND_SITE is not set. Allowing only *.netlify.app origins by default.'.yellow.bold);
 }
 
 app.use(cors({
-  origin: allowedOrigins.length > 0 ? allowedOrigins : false,
+  origin: (origin, callback) => {
+    // allow server-to-server requests and tools like curl/postman with no Origin header
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin) || netlifyOriginPattern.test(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
 
