@@ -1,13 +1,4 @@
-const rawBaseUrl =
-  process.env.REACT_APP_BACKEND_BASE_URL
-  || process.env.REACT_APP_API_BASE_URL
-  || '/api/v1';
-
-const BASE_URL = rawBaseUrl.replace(/\/$/, '');
-
-if (!process.env.REACT_APP_BACKEND_BASE_URL && !process.env.REACT_APP_API_BASE_URL) {
-  console.warn('Using fallback API base URL (/api/v1). Set REACT_APP_BACKEND_BASE_URL for non-proxied deployments.');
-}
+const BASE_URL = '/api/v1';
 
 // AUTHENTICATION API
 export const authApi = {
