@@ -38,34 +38,14 @@ app.use(
 );
 app.use(cookieParser());
 
-// CORS - restrict to allowed frontend origin(s)
-// STUDY_NOTION_FRONTEND_SITE may be a comma-separated list of origins
-const allowedOrigins = (process.env.STUDY_NOTION_FRONTEND_SITE || '')
-  .split(',')
-  .map((o) => o.trim())
-  .filter(Boolean);
-
-const netlifyOriginPattern = /^https:\/\/[a-z0-9-]+\.netlify\.app$/i;
-
-if (allowedOrigins.length === 0 && process.env.NODE_ENV === 'production') {
-  console.warn('STUDY_NOTION_FRONTEND_SITE is not set. Allowing only *.netlify.app origins by default.'.yellow.bold);
-}
-
+// CORS
+// Keep this permissive so every frontend route can call every backend route,
+// including Netlify previews/custom domains and local development.
 app.use(cors({
-  origin: (origin, callback) => {
-    // allow server-to-server requests and tools like curl/postman with no Origin header
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.includes(origin) || netlifyOriginPattern.test(origin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: true,
   credentials: true,
 }));
+app.options('*', cors({ origin: true, credentials: true }));
 
 // Rate limiting for auth routes (100 requests per 10 minutes per IP)
 const authLimiter = rateLimit({
