@@ -155,7 +155,8 @@ export const getAllReviewsOfCourse = async (courseId) => {
     const response = await apiConnector('POST', reviewApi.POST_GET_ALL_REVIEWS_OF_COURSE_API, { courseId });
     result = response.data?.data;
   } catch (error) {
-    toast.error('Could not fetch course reviews, Refresh the page');
+    console.error('getAllReviewsOfCourse failed:', error);
+    toast.error(error?.response?.data?.error || 'Could not fetch course reviews. Refresh the page.');
   }
   return result
 }
