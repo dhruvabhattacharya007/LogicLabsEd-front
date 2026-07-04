@@ -41,6 +41,11 @@ export const otherApi = {
   POST_CONTACT_US: BASE_URL + '/other/contactus'
 }
 
+// CHAT API
+export const chatApi = {
+  POST_CHAT_API: BASE_URL + '/chat'
+}
+
 // PAYMENT API
 export const paymentApi = {
   POST_CREATE_ORDER_API: BASE_URL + '/payments/createorder',

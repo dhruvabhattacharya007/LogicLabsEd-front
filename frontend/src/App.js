@@ -13,6 +13,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PageNotFound from './pages/PageNotFound';
 import Navbar from './components/common/Navbar';
+import ChatBot from './components/common/ChatBot';
 import PublicRoute from './components/core/Auth/PublicRoute';
 import PrivateRoute from './components/core/Auth/PrivateRoute';
 import DashBoard from './pages/DashBoard';
@@ -89,7 +90,8 @@ function App() {
       
       
       
-      <Navbar /> 
+      <Navbar />
+      <ChatBot />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/contact' element={<Contact />} />
