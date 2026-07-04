@@ -5,7 +5,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://logiclabsed-do-not-deploy-production.up.railway.app/api/:splat"
+  to = "https://logiclabsed-do-not-deploy-back-production.up.railway.app/:splat"
   status = 200
   force = true
 
