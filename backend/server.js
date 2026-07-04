@@ -10,6 +10,7 @@ const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/database');
 const clgDev = require('./utils/clgDev');
 const errorHandler = require('./middlewares/errorHandler');
+const { verifyMailTransport } = require('./utils/emailSender');
 
 
 const path = require('path');
@@ -96,6 +97,28 @@ app.listen(PORT, (err) => {
   }
   clgDev(`Server in running on ${PORT}`.yellow.underline.bold);
 });
+
+// Periodic SMTP health check: does NOT prevent the Gmail app password
+// from expiring/being revoked (nothing can - Google only invalidates it on
+// password change, 2FA changes, or manual revocation) - it just verifies
+// the connection on a schedule so a break gets logged the same day it
+// happens, instead of being discovered when a user's contact form fails.
+const MAIL_HEALTH_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000; // every 6 hours
+
+const runMailHealthCheck = async () => {
+  try {
+    await verifyMailTransport();
+    console.log('Mail health check: SMTP connection OK'.green);
+  } catch (err) {
+    // Intentionally console.error (not clgDev) - clgDev is a no-op outside
+    // NODE_ENV=development, and production is exactly where this needs to
+    // show up in the Railway logs.
+    console.error(`Mail health check FAILED - the Gmail app password may be revoked/expired. Generate a new one at https://myaccount.google.com/apppasswords. Error: ${err.message}`.red.bold);
+  }
+};
+
+runMailHealthCheck();
+setInterval(runMailHealthCheck, MAIL_HEALTH_CHECK_INTERVAL_MS);
 
 // TODO : check for these, what it is
 /**

@@ -1,16 +1,27 @@
 const nodemailer = require('nodemailer');
-const clgDev = require('./clgDev');
 
-const emailSender = async (toEmail, subject, body) => {
+const createMailTransport = () =>
+  nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+// Checks the SMTP connection/credentials without sending any mail.
+// Used by the periodic health check so we find out the moment the
+// Gmail app password is revoked/expired, instead of when a user's
+// contact form silently fails.
+const verifyMailTransport = async () => {
+  const transporter = createMailTransport();
+  await transporter.verify();
+};
+
+const emailSender = async (toEmail, subject, body, replyTo) => {
   try {
-    // For real purpose 
-    const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
+    // For real purpose
+    const transporter = createMailTransport();
 
     // // For testing / development purpose
     // const transporter = nodemailer.createTransport({
@@ -28,13 +39,15 @@ const emailSender = async (toEmail, subject, body) => {
       to: toEmail,
       subject: subject,
       html: body,
+      ...(replyTo ? { replyTo } : {}),
     });
 
     return info;
   } catch (err) {
-    clgDev(err.message);
+    console.error(`emailSender failed to send to ${toEmail}: ${err.message}`);
     throw err;
   }
 };
 
 module.exports = emailSender;
+module.exports.verifyMailTransport = verifyMailTransport;
