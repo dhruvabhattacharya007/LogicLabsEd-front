@@ -63,10 +63,6 @@ const Home = () => {
             <CTAButton active={true} linkto={'/signup'} >
               Learn More
             </CTAButton>
-
-            <CTAButton active={false} linkto={'https://echo-gemini-stream.lovable.app/'} >
-              Chat With AI 🤖
-            </CTAButton>
           </div>
 
           <div className='mx-3 my-7 transition-all duration-200 shadow-[10px_-5px_50px_-5px] shadow-blue-200' >
