@@ -17,9 +17,7 @@ export const contactUs = async (contactData, setLoading, reset) => {
       message: ''
     })
   } catch (error) {
-    const message = error?.response?.data?.error
-      || (error?.request ? 'Could not reach the server. Please check your connection and try again.' : 'Something went wrong. Please try again.');
-    toast.error(message, { duration: 5000 });
+    toast.error(error?.response?.data?.error || 'Contact failed')
   }
   toast.dismiss(toastId)
   setLoading(false);

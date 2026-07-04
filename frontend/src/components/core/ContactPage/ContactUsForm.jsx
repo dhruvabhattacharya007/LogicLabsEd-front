@@ -73,20 +73,11 @@ const ContactUsForm = () => {
               name='email'
               placeholder='Enter email address'
               className='input-style '
-              {...register('email', {
-                required: {
-                  value: true,
-                  message: 'Please enter your email address'
-                },
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: 'Please enter a valid email address'
-                }
-              })}
+              {...register('email', { required: true })}
             />
 
             {
-              errors.email && <p className='input-error-style' >{errors.email.message}</p>
+              errors.email && <p className='input-error-style' >Please enter your email address</p>
             }
           </label>
         </div>
@@ -117,9 +108,7 @@ const ContactUsForm = () => {
 
             <div className='w-[calc(100%-90px)]' >
               <input
-                type='tel'
-                inputMode='numeric'
-                autoComplete='tel-national'
+                type='number'
                 name='phoneNo'
                 id='phoneNo'
                 placeholder='12345 67890'
@@ -129,9 +118,13 @@ const ContactUsForm = () => {
                     value: true,
                     message: 'Please enter your Phone Number'
                   },
-                  pattern: {
-                    value: /^[0-9]{7,12}$/,
-                    message: 'Enter a valid phone number (digits only, 7-12 numbers)'
+                  minLength: {
+                    value: 10,
+                    message: 'Invalid Phone Number'
+                  },
+                  maxLength: {
+                    value: 12,
+                    message: 'Invalid Phone Number'
                   }
                 })}
               />
