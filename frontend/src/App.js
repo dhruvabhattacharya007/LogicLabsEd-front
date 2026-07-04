@@ -1,6 +1,5 @@
 import './App.css';
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import Home from './pages/Home'
@@ -43,46 +42,6 @@ function App() {
 
   // eslint-disable-next-line
   const { user } = useSelector(state => state.profile);
-
-  useEffect(() => {
-    const loadBotpressWebchat = () => {
-      window.botpressWebChat.init({
-        "composerPlaceholder": "Chat with Dhiru Bhai",
-        "botConversationDescription": "Your Companion ",
-        "botId": "ea434e62-4676-468a-8b09-0e8de74e39b9",
-        "hostUrl": "https://cdn.botpress.cloud/webchat/v1",
-        "messagingUrl": "https://messaging.botpress.cloud",
-        "clientId": "ea434e62-4676-468a-8b09-0e8de74e39b9",
-        "webhookId": "7ef0c9f8-47c6-4335-bafe-78370fbe2a9d",
-        "lazySocket": true,
-        "themeName": "prism",
-        "botName": "Dhiru Bhai",
-        "avatarUrl": "https://e7.pngegg.com/pngimages/498/917/png-clipart-computer-icons-desktop-chatbot-icon-blue-angle-thumbnail.png",
-        "website": "https://logiclabsed.vercel.app/",
-        "frontendVersion": "v1",
-        "showPoweredBy": true,
-        "theme": "prism",
-        "themeColor": "#2563eb"
-      });
-    };
-  
-    const script1 = document.createElement('script');
-    script1.src = 'https://cdn.botpress.cloud/webchat/v1/inject.js';
-    script1.async = true;
-    script1.onload = loadBotpressWebchat;
-    document.body.appendChild(script1);
-  
-    const script2 = document.createElement('script');
-    script2.src = 'https://mediafiles.botpress.cloud/ea434e62-4676-468a-8b09-0e8de74e39b9/webchat/config.js';
-    script2.defer = true;
-    script2.onload = loadBotpressWebchat;
-    document.body.appendChild(script2);
-  
-    return () => {
-      document.body.removeChild(script1);
-      document.body.removeChild(script2);
-    };
-  }, []); // Empty dependency array ensures the effect runs only once
 
   return (
     

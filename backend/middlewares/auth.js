@@ -13,7 +13,7 @@ exports.protect = async (req, res, next) => {
     }
 
     try {
-      const decode = jwt.verify(token, process.env.JWT_SECRET);
+      const decode = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
       req.user = decode;
       return next();
     } catch (err) {

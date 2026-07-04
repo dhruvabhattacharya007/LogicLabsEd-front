@@ -39,13 +39,26 @@ app.use(
 app.use(cookieParser());
 
 // CORS
-// Keep this permissive so every frontend route can call every backend route,
-// including Netlify previews/custom domains and local development.
-app.use(cors({
-  origin: true,
+// Auth is cookie-based (see middlewares/auth.js), so reflecting every origin
+// here while allowing credentials would let ANY website make authenticated
+// requests on a logged-in user's behalf (CSRF via CORS). Only allow our own
+// Netlify deploys (including previews) and local dev.
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true; // same-origin / non-browser requests (curl, server-to-server)
+  if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return true;
+  if (/^https:\/\/[a-z0-9-]+--logiclabs-ed\.netlify\.app$/.test(origin)) return true; // deploy previews
+  return origin === 'https://logiclabs-ed.netlify.app';
+};
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    callback(null, isAllowedOrigin(origin));
+  },
   credentials: true,
-}));
-app.options('*', cors({ origin: true, credentials: true }));
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Rate limiting for auth routes (100 requests per 10 minutes per IP)
 const authLimiter = rateLimit({
