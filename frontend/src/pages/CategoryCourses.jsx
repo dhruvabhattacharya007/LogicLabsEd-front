@@ -15,6 +15,7 @@ const CategoryCourses = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [categoryId, setCategoryId] = useState(null);
   const [categoryPageData, setCategoryPageData] = useState(null);
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -45,6 +46,7 @@ const CategoryCourses = () => {
       setLoading(true);
       const result = await getCategoryCourses(categoryId === "NOT_FOUND" ? null : categoryId);
       setCategoryPageData(result);
+      setError(!result);
       setLoading(false);
     }
 
@@ -56,7 +58,7 @@ const CategoryCourses = () => {
   return (
     <div>
       {
-        (loading || (!loading && !categoryPageData)) && (
+        loading && (
           <div className='grid place-items-center min-h-[calc(100vh-3.5rem)]' >
             <Spinner />
           </div>
@@ -64,7 +66,17 @@ const CategoryCourses = () => {
       }
 
       {
-        !loading && categoryPageData &&
+        !loading && error && (
+          <div className='grid place-items-center min-h-[calc(100vh-3.5rem)]' >
+            <p className='text-richblack-5 text-lg' >
+              Could not load courses for this category. Please try again later.
+            </p>
+          </div>
+        )
+      }
+
+      {
+        !loading && !error && categoryPageData &&
         (
           <div className=' bg-richblack-900 ' >
             {/* Header */}
@@ -127,18 +139,21 @@ const CategoryCourses = () => {
 
 
             {/* Section 2 */}
-            <div className='box-content mx-auto px-10 py-12 max-w-maxContentTab lg:max-w-maxContent'>
-              <h2 className='text-2xl text-richblack-5 font-bold lg:text-4xl' >
-                Top courses in {categoryPageData.otherCategoryCourses.name}
-              </h2>
+            {
+              categoryPageData.otherCategoryCourses &&
+              <div className='box-content mx-auto px-10 py-12 max-w-maxContentTab lg:max-w-maxContent'>
+                <h2 className='text-2xl text-richblack-5 font-bold lg:text-4xl' >
+                  Top courses in {categoryPageData.otherCategoryCourses.name}
+                </h2>
 
-              <div className='py-8' >
-                <CourseSlider
-                  courses={categoryPageData.otherCategoryCourses.courses}
-                />
+                <div className='py-8' >
+                  <CourseSlider
+                    courses={categoryPageData.otherCategoryCourses.courses}
+                  />
+                </div>
+
               </div>
-
-            </div>
+            }
 
 
 
