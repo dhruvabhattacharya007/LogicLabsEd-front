@@ -83,7 +83,7 @@ const Footer = () => {
 
 
           <div className="text-center">
-          Made by 🚀 <a href="dhruvabhattacharya.github.io" style={{ fontWeight: 'bold', color: 'grey' }}>Dhruva Bhattacharya</a> © 2023 Logic Labs Ed
+          Made by 🚀 <a href="dhruvabhattacharya.github.io" style={{ fontWeight: 'bold', color: 'grey' }}>Dhruva Bhattacharya</a> © 2026 Logic Labs Ed
           </div>
         </div>
       </div>
