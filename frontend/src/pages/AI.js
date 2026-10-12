@@ -15,7 +15,7 @@ const AI = () => {
   return (<div>
 
     <div className="text-center">
-    Made by ❤️ <a href="link-to-your-page" style={{ fontWeight: 'bold', color: 'red' }}>Dhruva Bhattacharya</a> © 2023 Logic Labs Ed
+    Made by ❤️ <a href="link-to-your-page" style={{ fontWeight: 'bold', color: 'red' }}>Dhruva Bhattacharya</a> © 2026 Logic Labs Ed
     </div>
 
     <Footer />
